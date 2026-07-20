@@ -4,21 +4,30 @@
   fetchurl,
   gnutar,
   xz,
-  steamDisplayName ? "Proton-CachyOS",
+  variant ? "x86_64",
+  steamDisplayName ? if variant == "x86_64" then "Proton-CachyOS" else "Proton-CachyOS (${variant})",
 }:
 
 let
-  release = {
-    version = "cachyos-11.0-20260702-slr";
-    hash = "sha256:428d7a47b29519856e5bad50eb7e0f0123ec2431e2d37c31cebef2703f24f253";
-  }; # renovate: proton-cachyos
+  releases = {
+    x86_64 = {
+      version = "cachyos-11.0-20260702-slr";
+      hash = "sha256:428d7a47b29519856e5bad50eb7e0f0123ec2431e2d37c31cebef2703f24f253";
+    }; # renovate: proton-cachyos-x86_64
+    x86_64_v3 = {
+      version = "cachyos-11.0-20260702-slr";
+      hash = "sha256:11397853eb95f8fb448535cebe2655471306c80c3456c46b52cd568708a4fe5c";
+    }; # renovate: proton-cachyos-x86_64_v3
+  };
+  release = releases.${variant} or (throw "Unsupported Proton-CachyOS variant: ${variant}");
 in
+assert releases.x86_64.version == releases.x86_64_v3.version;
 stdenvNoCC.mkDerivation (finalAttrs: {
-  pname = "proton-cachyos";
+  pname = if variant == "x86_64" then "proton-cachyos" else "proton-cachyos-${variant}";
   version = lib.removeSuffix "-slr" (lib.removePrefix "cachyos-" release.version);
 
   src = fetchurl {
-    url = "https://github.com/CachyOS/proton-cachyos/releases/download/${release.version}/proton-${release.version}-x86_64.tar.xz";
+    url = "https://github.com/CachyOS/proton-cachyos/releases/download/${release.version}/proton-${release.version}-${variant}.tar.xz";
     inherit (release) hash;
   };
 
@@ -51,7 +60,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     test -x "$steamcompattool/proton"
 
     substituteInPlace "$steamcompattool/compatibilitytool.vdf" \
-      --replace-fail "proton-${release.version}-x86_64" "${steamDisplayName}"
+      --replace-fail "proton-${release.version}-${variant}" "${steamDisplayName}"
 
     runHook postInstall
   '';

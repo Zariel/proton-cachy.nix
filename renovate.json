@@ -13,19 +13,38 @@
         "/^package\\.nix$/"
       ],
       "matchStrings": [
-        "release = \\{\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"sha256:(?<currentDigest>[a-f0-9]+)\";\\s+\\}; # renovate: proton-cachyos"
+        "x86_64 = \\{\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"sha256:(?<currentDigest>[a-f0-9]+)\";\\s+\\}; # renovate: proton-cachyos-x86_64"
       ],
-      "depNameTemplate": "CachyOS/proton-cachyos",
-      "datasourceTemplate": "custom.proton-cachyos",
+      "depNameTemplate": "CachyOS/proton-cachyos/x86_64",
+      "datasourceTemplate": "custom.proton-cachyos-x86_64",
       "versioningTemplate": "regex:^cachyos-(?<major>\\d+)\\.(?<minor>\\d+)-(?<patch>\\d+)-slr$",
-      "autoReplaceStringTemplate": "release = {\n    version = \"{{{newValue}}}\";\n    hash = \"sha256:{{{newDigest}}}\";\n  }; # renovate: proton-cachyos"
+      "autoReplaceStringTemplate": "x86_64 = {\n      version = \"{{{newValue}}}\";\n      hash = \"sha256:{{{newDigest}}}\";\n    }; # renovate: proton-cachyos-x86_64"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^package\\.nix$/"
+      ],
+      "matchStrings": [
+        "x86_64_v3 = \\{\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"sha256:(?<currentDigest>[a-f0-9]+)\";\\s+\\}; # renovate: proton-cachyos-x86_64_v3"
+      ],
+      "depNameTemplate": "CachyOS/proton-cachyos/x86_64_v3",
+      "datasourceTemplate": "custom.proton-cachyos-x86_64_v3",
+      "versioningTemplate": "regex:^cachyos-(?<major>\\d+)\\.(?<minor>\\d+)-(?<patch>\\d+)-slr$",
+      "autoReplaceStringTemplate": "x86_64_v3 = {\n      version = \"{{{newValue}}}\";\n      hash = \"sha256:{{{newDigest}}}\";\n    }; # renovate: proton-cachyos-x86_64_v3"
     }
   ],
   "customDatasources": {
-    "proton-cachyos": {
+    "proton-cachyos-x86_64": {
       "defaultRegistryUrlTemplate": "https://api.github.com/repos/CachyOS/proton-cachyos/releases/latest",
       "transformTemplates": [
         "($version := tag_name; {\"releases\":[{\"version\":$version,\"releaseTimestamp\":published_at,\"changelogUrl\":html_url,\"digest\":$substringAfter(assets[name = \"proton-\" & $version & \"-x86_64.tar.xz\"].digest, \":\")}],\"sourceUrl\":\"https://github.com/CachyOS/proton-cachyos\"})"
+      ]
+    },
+    "proton-cachyos-x86_64_v3": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/CachyOS/proton-cachyos/releases/latest",
+      "transformTemplates": [
+        "($version := tag_name; {\"releases\":[{\"version\":$version,\"releaseTimestamp\":published_at,\"changelogUrl\":html_url,\"digest\":$substringAfter(assets[name = \"proton-\" & $version & \"-x86_64_v3.tar.xz\"].digest, \":\")}],\"sourceUrl\":\"https://github.com/CachyOS/proton-cachyos\"})"
       ]
     }
   },
@@ -33,8 +52,10 @@
     {
       "description": "Automatically merge tested Proton-CachyOS releases",
       "matchPackageNames": [
-        "CachyOS/proton-cachyos"
+        "CachyOS/proton-cachyos/x86_64",
+        "CachyOS/proton-cachyos/x86_64_v3"
       ],
+      "groupName": "Proton-CachyOS release",
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": false

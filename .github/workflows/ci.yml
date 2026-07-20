@@ -27,5 +27,5 @@ jobs:
       - name: Check flake
         run: nix flake check --print-build-logs
 
-      - name: Build package
-        run: nix build .#proton-cachyos --print-build-logs
+      - name: Build packages
+        run: nix build .#proton-cachyos .#proton-cachyos-x86_64-v3 --print-build-logs
