@@ -1,0 +1,53 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "nix": {
+    "enabled": true
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^package\\.nix$/"
+      ],
+      "matchStrings": [
+        "release = \\{\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"sha256:(?<currentDigest>[a-f0-9]+)\";\\s+\\}; # renovate: proton-cachyos"
+      ],
+      "depNameTemplate": "CachyOS/proton-cachyos",
+      "datasourceTemplate": "custom.proton-cachyos",
+      "versioningTemplate": "regex:^cachyos-(?<major>\\d+)\\.(?<minor>\\d+)-(?<patch>\\d+)-slr$",
+      "autoReplaceStringTemplate": "release = {\n    version = \"{{{newValue}}}\";\n    hash = \"sha256:{{{newDigest}}}\";\n  }; # renovate: proton-cachyos"
+    }
+  ],
+  "customDatasources": {
+    "proton-cachyos": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/CachyOS/proton-cachyos/releases/latest",
+      "transformTemplates": [
+        "($version := tag_name; {\"releases\":[{\"version\":$version,\"releaseTimestamp\":published_at,\"changelogUrl\":html_url,\"digest\":$substringAfter(assets[name = \"proton-\" & $version & \"-x86_64.tar.xz\"].digest, \":\")}],\"sourceUrl\":\"https://github.com/CachyOS/proton-cachyos\"})"
+      ]
+    }
+  },
+  "packageRules": [
+    {
+      "description": "Automatically merge tested Proton-CachyOS releases",
+      "matchPackageNames": [
+        "CachyOS/proton-cachyos"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": false
+    },
+    {
+      "description": "Keep flake inputs and GitHub Actions current",
+      "matchManagers": [
+        "nix",
+        "github-actions"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": false
+    }
+  ]
+}
