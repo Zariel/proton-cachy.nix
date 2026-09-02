@@ -74,11 +74,18 @@ update changes both versions and fixed-output hashes together. Renovate opens a
 pull request for each new latest release and merges it only after the GitHub
 Actions `test` check passes.
 
-To activate this on a fork:
+Renovate runs hourly and can also be started manually from the GitHub Actions
+page. It authenticates as a GitHub App using a short-lived installation token.
 
-1. Install the [Renovate GitHub App](https://github.com/apps/renovate) for the
-   repository.
-2. Protect `main` and require the `test` status check before merging.
+To activate it on a fork:
+
+1. Install a GitHub App with the
+   [permissions required by Renovate](https://docs.renovatebot.com/modules/platform/github/#running-as-a-github-app)
+   on the repository. Grant `Workflows` read and write access so Renovate can
+   update pinned GitHub Actions.
+2. Add the App ID as the `BOT_APP_ID` Actions secret and its PEM private key as
+   `BOT_APP_PRIVATE_KEY`.
+3. Protect `main` and require the `test` status check before merging.
 
 The flake lock file and pinned GitHub Actions are also kept current by
 Renovate and follow the same test-before-merge policy.
