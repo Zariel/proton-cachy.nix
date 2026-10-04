@@ -11,12 +11,12 @@
 let
   releases = {
     x86_64 = {
-      version = "cachyos-11.0-20260703-slr";
-      hash = "sha256:62ff4b2750180723cc00538608fe687e21d1d91a31ef64ce1a7c9f46c3db310b";
+      version = "cachyos-11.0-20261005-slr";
+      hash = "sha256:096bfe73b506d6565b04ecc45214197a4091818f16ed91f5324b4d2082d0a263";
     }; # renovate: proton-cachyos-x86_64
     x86_64_v3 = {
-      version = "cachyos-11.0-20260703-slr";
-      hash = "sha256:03ecd42bd7d474e9ba443ce8972d9678a1fa3acbf2920d761f35397946ece284";
+      version = "cachyos-11.0-20261005-slr";
+      hash = "sha256:ba52a4f31a060ffca2b8e05fc00e51bc39e4c1501928eb5a9218b0fa07bfc8c7";
     }; # renovate: proton-cachyos-x86_64_v3
   };
   release = releases.${variant} or (throw "Unsupported Proton-CachyOS variant: ${variant}");
